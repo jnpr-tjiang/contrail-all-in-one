@@ -23,9 +23,9 @@ Set the ip-addr
 
 Set contrail-version from https://hub.docker.com/r/opencontrailnightly/contrail-nodemgr/tags/
 ```
-CONTROLLER_NODES: 10.84.23.39
-CONTRAIL_VERSION: master-20180205195538-centos7-ocata
-CONTAINER_REGISTRY: opencontrailnightly
+CONTROLLER_NODES: 10.84.24.1
+CONTRAIL_VERSION: 5.0.0-134-centos7-ocata
+CONTAINER_REGISTRY: michaelhenkel
 NTP_SERVER: 10.84.5.100
 ```
 
@@ -43,7 +43,8 @@ wget http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
 openstack image create cirros2 --disk-format qcow2 --public --container-format bare --file cirros-0.4.0-x86_64-disk.img                                      
 openstack network create testvn
 openstack subnet create --subnet-range 192.168.100.0/24 --network testvn subnet1
-openstack flavor create --ram 512 --disk 1 --vcpus 1 m1.tiny NET_ID=`openstack network list | grep testvn | awk -F '|' '{print $2}' | tr -d ' '`
+openstack flavor create --ram 512 --disk 1 --vcpus 1 m1.tiny 
+NET_ID=`openstack network list | grep testvn | awk -F '|' '{print $2}' | tr -d ' '`
 openstack server create --flavor m1.tiny --image cirros2 --nic net-id=${NET_ID} test_vm1
 openstack server create --flavor m1.tiny --image cirros2 --nic net-id=${NET_ID} test_vm2
 ```
