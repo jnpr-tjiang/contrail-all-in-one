@@ -19,14 +19,12 @@ cd ~/contrail-all-in-one
 ```
 
 # 3. Edit inventory/group_vars/all.yml
-Set the ip-addr
-
-Set contrail-version from https://hub.docker.com/r/opencontrailnightly/contrail-nodemgr/tags/
+Set the ip-addr for CONTROLLER_NODES
 ```
 CONTROLLER_NODES: 10.84.24.1
+NTP_SERVER: 10.84.5.100
 CONTRAIL_VERSION: 5.0.0-134-centos7-ocata
 CONTAINER_REGISTRY: michaelhenkel
-NTP_SERVER: 10.84.5.100
 ```
 
 # 4. Deploy contrail with kolla
