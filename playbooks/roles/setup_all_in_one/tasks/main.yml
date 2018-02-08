@@ -65,3 +65,12 @@
 
 - name: run contrail deploy ansible
   shell: cd /root/contrail-ansible-deployer && ansible-playbook -e '{"CREATE_CONTAINERS":true}' -i inventory/ playbooks/deploy.yml
+
+- name: create the /etc/kolla/admin-openrc.sh
+  shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy post-deploy.yml
+
+- name: install Openstack client packages
+  shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy post-deploy-contrail.yml
+
+- name: validate setup
+  shell: source /etc/kolla/admin-openrc.sh && openstack network list
