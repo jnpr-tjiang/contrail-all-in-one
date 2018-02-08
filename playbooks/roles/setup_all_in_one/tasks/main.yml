@@ -64,8 +64,8 @@
 
 - name: set vm config string
   set_fact:
-    VM_CONFIG: "'{\"CONTAINER_VM_CONFIG\":{\"network\":{\"ntpserver\":\"{{ ntp_server }} }'"
-
+    VM_CONFIG: "'{\"CONTAINER_VM_CONFIG\":{\"network\":{\"ntpserver\":\"{{ ntp_server }}\"}}}'"
+    
 - name: run contrail setup ansible
   shell: cd /root/contrail-ansible-deployer && ansible-playbook -e '{"CONFIGURE_VMS":true}' -e {{ VM_CONFIG }} -t configure_vms -i inventory/ playbooks/deploy.yml
 
