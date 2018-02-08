@@ -44,6 +44,12 @@
     src: etc_kolla_globals.j2
     dest: /root/contrail-kolla-ansible/etc/kolla/globals.yml
 
+- name: git clone contrail-ansible-deployer
+  git:
+    repo: 'https://github.com/Juniper/contrail-ansible-deployer.git'
+    dest: /root/contrail-ansible-deployer
+    update: no
+
 - name: populate contrail-ansible-deployer/inventory/hosts
   template:
     src: inventory_hosts.j2
