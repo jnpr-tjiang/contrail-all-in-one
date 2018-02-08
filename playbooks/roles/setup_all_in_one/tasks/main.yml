@@ -58,28 +58,3 @@
   template:
     src: group_vars_container_hosts.j2
     dest: /root/contrail-ansible-deployer/inventory/group_vars/container_hosts.yml
-
-- name: run kolla setup ansible
-  shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=bootstrap-servers kolla-host.yml
-
-- name: set vm config string
-  set_fact:
-    VM_CONFIG: "'{\"CONTAINER_VM_CONFIG\":{\"network\":{\"ntpserver\":\"{{ ntp_server }}\"}}}'"
-    
-- name: run contrail setup ansible
-  shell: cd /root/contrail-ansible-deployer && ansible-playbook -e '{"CONFIGURE_VMS":true}' -e {{ VM_CONFIG }} -t configure_vms -i inventory/ playbooks/deploy.yml
-
-- name: run kolla deploy ansible
-  shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy site.yml
-
-- name: run contrail deploy ansible
-  shell: cd /root/contrail-ansible-deployer && ansible-playbook -e '{"CREATE_CONTAINERS":true}' -i inventory/ playbooks/deploy.yml
-
-- name: create the /etc/kolla/admin-openrc.sh
-  shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy post-deploy.yml
-
-- name: install Openstack client packages
-  shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy post-deploy-contrail.yml
-
-- name: validate setup
-  shell: source /etc/kolla/admin-openrc.sh && openstack network list
