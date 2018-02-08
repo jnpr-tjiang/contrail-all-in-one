@@ -16,7 +16,7 @@
     ntp_server: "{{ NTP_SERVER }}"
 
 - name: get interface name
-  shell: ip address | grep {{ all_in_one_node }} | awk '{print $8}'
+  shell: ip address | grep {{ all_in_one_node }} | awk '{print $NF}'
   register: shell_output
 
 - name: set interface name
