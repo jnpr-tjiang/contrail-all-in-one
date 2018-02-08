@@ -8,6 +8,7 @@ yum -y install ansible-2.3.1.0
 yum -y install centos-release-openstack-ocata
 yum -y install python-oslo-config
 yum -y install git
+yum -y install python-pip
 pip install --upgrade Jinja2
 ```
 
