@@ -12,6 +12,7 @@
   set_fact:
     all_in_one_node: "{{ CONTROLLER_NODES }}"
     contrail_version: "{{ CONTRAIL_VERSION }}"
+    container_registry: "{{ CONTAINER_REGISTRY }}"
     ntp_server: "{{ NTP_SERVER }}"
 
 - name: get interface name
