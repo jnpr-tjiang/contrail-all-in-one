@@ -2,8 +2,6 @@
 - name: setup base host
   yum:
     name: 
-      - centos-release-openstack-ocata
-      - python-oslo-config
       - net-tools
       - wget
 
