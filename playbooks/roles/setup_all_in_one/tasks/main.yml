@@ -62,8 +62,12 @@
 - name: run kolla setup ansible
   shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=bootstrap-servers kolla-host.yml
 
+- name: set vm config string
+  set_fact:
+    VM_CONFIG: "'{\"CONTAINER_VM_CONFIG\":{\"network\":{\"ntpserver\":\"{{ ntp_server }} }'"
+
 - name: run contrail setup ansible
-  shell: cd /root/contrail-ansible-deployer && ansible-playbook -e '{"CONFIGURE_VMS":true}' -e '{"CONTAINER_VM_CONFIG":{"network":{"ntpserver":"10.84.5.100"}}}' -t configure_vms -i inventory/ playbooks/deploy.yml
+  shell: cd /root/contrail-ansible-deployer && ansible-playbook -e '{"CONFIGURE_VMS":true}' -e {{ VM_CONFIG }} -t configure_vms -i inventory/ playbooks/deploy.yml
 
 - name: run kolla deploy ansible
   shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy site.yml
