@@ -16,6 +16,7 @@ cd ~/contrail-all-in-one
 
 # 3. Edit inventory/group_vars/all.yml
 Set the ip-addr
+
 Set contrail-version from https://hub.docker.com/r/opencontrailnightly/contrail-nodemgr/tags/
 ```
 CONTROLLER_NODES: 10.84.23.39
