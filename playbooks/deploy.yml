@@ -1,0 +1,5 @@
+---
+- hosts:
+  - all_in_one_host
+  roles:
+  - setup_all_in_one

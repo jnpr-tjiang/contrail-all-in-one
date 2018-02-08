@@ -1,0 +1,67 @@
+---
+- name: setup base host
+  yum:
+    name: 
+      - centos-release-openstack-ocata
+      - python-oslo-config
+      - net-tools
+      - wget
+
+- name: modprobe ip_vs for keepalived to works
+  command: modprobe ip_vs
+
+- name: set all-in-one node to CONTROLLER_NODES
+  set_fact:
+    all_in_one_node: "{{ CONTROLLER_NODES }}"
+    contrail_version: "{{ CONTRAIL_VERSION }}"
+    ntp_server: "{{ NTP_SERVER }}"
+
+- name: get interface name
+  shell: ip address | grep {{ all_in_one_node }} | awk '{print $8}'
+  register: shell_output
+
+- name: set interface name
+  set_fact:
+    interface_name: "{{ shell_output.stdout }}"
+
+- name: get gateway ip
+  shell: ip route | grep default | awk '{print $3}'
+  register: shell_output
+
+- name: set gateway ip
+  set_fact:
+    gateway_ip: "{{ shell_output.stdout }}"
+
+- name: git clone contrail-kolla-ansible version contrail/ocata
+  git:
+    repo: 'https://github.com/Juniper/contrail-kolla-ansible.git'
+    dest: /root/contrail-kolla-ansible
+    version: contrail/ocata
+    update: no
+
+- name: populate contrail-kolla-ansible/etc/kolla/globals.yml
+  template:
+    src: etc_kolla_globals.j2
+    dest: /root/contrail-kolla-ansible/etc/kolla/globals.yml
+
+- name: populate contrail-ansible-deployer/inventory/hosts
+  template:
+    src: inventory_hosts.j2
+    dest: /root/contrail-ansible-deployer/inventory/hosts
+
+- name: populate contrail-ansible-deployer/inventory/group_vars/container_hosts.yml
+  template:
+    src: group_vars_container_hosts.j2
+    dest: /root/contrail-ansible-deployer/inventory/group_vars/container_hosts.yml
+
+- name: run kolla setup ansible
+  shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=bootstrap-servers kolla-host.yml
+
+- name: run contrail setup ansible
+  shell: cd /root/contrail-ansible-deployer && ansible-playbook -e '{"CONFIGURE_VMS":true}' -e '{"CONTAINER_VM_CONFIG":{"network":{"ntpserver":"10.84.5.100"}}}' -t configure_vms -i inventory/ playbooks/deploy.yml
+
+- name: run kolla deploy ansible
+  shell: cd /root/contrail-kolla-ansible/ansible && ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy site.yml
+
+- name: run contrail deploy ansible
+  shell: cd /root/contrail-ansible-deployer && ansible-playbook -e '{"CREATE_CONTAINERS":true}' -i inventory/ playbooks/deploy.yml
