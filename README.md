@@ -1,1 +1,1 @@
-Deploy contrail micro-services in all in one machine
+Deploy contrail micro-services in an all in one server
