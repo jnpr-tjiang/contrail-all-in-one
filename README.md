@@ -59,7 +59,14 @@ cd /root/contrail-ansible-deployer
 ansible-playbook -e '{"CREATE_CONTAINERS":true}' -i inventory/ playbooks/deploy.yml
 ```
 
-# 9. Test your setup with VM to VM ping
+# 9. Create the /etc/kolla/admin-openrc.sh and install Openstack client packages
+```
+cd ~/contrail-kolla-ansible/ansible
+ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy post-deploy.yml
+ansible-playbook -i inventory/all-in-one -e@../etc/kolla/globals.yml -e@../etc/kolla/passwords.yml -e action=deploy post-deploy-contrail.yml
+```
+
+# 10. Test your setup with VM to VM ping
 ```
 source /etc/kolla/admin-openrc.sh
 wget http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
